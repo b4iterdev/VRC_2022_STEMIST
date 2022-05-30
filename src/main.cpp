@@ -7,6 +7,7 @@
 #define s2 36
 #define s3 2
 #define s4 32
+#define s5 25
 #define IRSwitch 7
 #define IR 8
 void setup()
@@ -16,6 +17,7 @@ void setup()
   pinMode(s2, INPUT);
   pinMode(s3, INPUT);
   pinMode(s4, INPUT);
+  pinMode(s5, INPUT);
   pinMode(IRSwitch, INPUT);
   pinMode(IR,INPUT);
   initMotors();
@@ -28,6 +30,7 @@ void lineMonitoring(void) {
   int sensor2 = digitalRead(s2);
   int sensor3 = digitalRead(s3);
   int sensor4 = digitalRead(s4);
+  int sensor5 = digitalRead(s5);
   int lineSwitch = digitalRead(IRSwitch);
   int IRSwitchval = digitalRead(IR);
   
