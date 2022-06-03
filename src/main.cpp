@@ -1,18 +1,16 @@
 #include <Arduino.h>
 #include <motors.h>
-#include <PS2_controller.h>
+#include <autonomous.h>
+#include <ESP32Servo.h>
 
-//Đặt chân cảm biến dò đường
-#define s1 39
-#define s2 36
-#define s3 2
-#define s4 32
-#define s5 25
-#define IRSwitch 7
-#define IR 8
+Servo Servo1;
+
+
 void setup()
 {
   Serial.begin(115200);
+  Servo1.attach(7);
+  Servo1.write(0);
   pinMode(s1, INPUT); 
   pinMode(s2, INPUT);
   pinMode(s3, INPUT);
@@ -25,32 +23,17 @@ void setup()
   Serial.println("Done setup!");
 }
 
-void lineMonitoring(void) {
-  int sensor1 = digitalRead(s1);
-  int sensor2 = digitalRead(s2);
-  int sensor3 = digitalRead(s3);
-  int sensor4 = digitalRead(s4);
-  int sensor5 = digitalRead(s5);
-  int lineSwitch = digitalRead(IRSwitch);
-  int IRSwitchval = digitalRead(IR);
-  
-  Serial.print("S1: ");
-  Serial.print(sensor1);Serial.print("   ");
-  Serial.print("S2: ");
-  Serial.print(sensor2);Serial.print("   ");
-  Serial.print("S3: ");
-  Serial.print(sensor3);Serial.print("   ");
-  Serial.print("S4: ");
-  Serial.print(sensor4);Serial.print("   ");
-  Serial.print("Công tắc: ");
-  Serial.print(lineSwitch);Serial.print("   ");
-  Serial.print("Hồng ngoại: ");
-  Serial.println(IRSwitchval);  
-  delay(200);
+
+void pushEngine(void) {
+    if(ps2x.ButtonPressed(PSB_TRIANGLE)) {
+      Servo1.write(180);
+    }
+    if(ps2x.ButtonReleased(PSB_TRIANGLE)) {
+      Servo1.write(0);
+    }
 }
 void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
-  lineMonitoring();
 }
