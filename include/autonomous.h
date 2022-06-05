@@ -1,6 +1,5 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
-#include <PS2_controller.h>
 
 //Đặt chân cảm biến dò đường
 #define s1 39

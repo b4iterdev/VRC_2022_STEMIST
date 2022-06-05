@@ -2,15 +2,15 @@
 #include <motors.h>
 #include <autonomous.h>
 #include <ESP32Servo.h>
+#include <PS2_controller.h>
 
-Servo Servo1;
+#define PWM_CHANNEL5 12
+#define PWM_CHANNEL6 13
 
 
 void setup()
 {
   Serial.begin(115200);
-  Servo1.attach(7);
-  Servo1.write(0);
   pinMode(s1, INPUT); 
   pinMode(s2, INPUT);
   pinMode(s3, INPUT);
@@ -20,20 +20,34 @@ void setup()
   pinMode(IR,INPUT);
   initMotors();
   setupPS2controller();
+
   Serial.println("Done setup!");
 }
 
 
 void pushEngine(void) {
     if(ps2x.ButtonPressed(PSB_TRIANGLE)) {
-      Servo1.write(180);
+      pwm.setPWM(PWM_CHANNEL5,4095,0);
+      pwm.setPWM(PWM_CHANNEL6,0,4095);
     }
-    if(ps2x.ButtonReleased(PSB_TRIANGLE)) {
-      Servo1.write(0);
+    if(ps2x.ButtonPressed(PSB_CIRCLE)) {
+      pwm.setPWM(PWM_CHANNEL6,4095,0);
+      pwm.setPWM(PWM_CHANNEL5,0,4095);
+      delay(3000);
+      pwm.setPWM(PWM_CHANNEL5,2048,2048);
+      pwm.setPWM(PWM_CHANNEL6,2048,2048);
     }
+    if(ps2x.ButtonPressed(PSB_CROSS)) {
+       
+    }
+    if(ps2x.ButtonPressed(PSB_SQUARE)) {
+    }
+    
 }
 void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
+  //if(ps2x.Button(PSB_START)) {autoMode();}
+  pushEngine();
 }
