@@ -7,6 +7,12 @@
 #define PWM_CHANNEL5 12
 #define PWM_CHANNEL6 13
 
+#define Servo_1 7
+#define Servo_2 6
+#define Servo_3 5
+#define Servo_4 4
+#define Servo_5 3
+#define Servo_6 2
 
 void setup()
 {
@@ -31,23 +37,23 @@ void pushEngine(void) {
       pwm.setPWM(PWM_CHANNEL6,0,4095);
     }
     if(ps2x.ButtonPressed(PSB_CIRCLE)) {
-      pwm.setPWM(PWM_CHANNEL6,4095,0);
       pwm.setPWM(PWM_CHANNEL5,0,4095);
-      delay(3000);
-      pwm.setPWM(PWM_CHANNEL5,2048,2048);
-      pwm.setPWM(PWM_CHANNEL6,2048,2048);
+      pwm.setPWM(PWM_CHANNEL6,4095,0);    
     }
-    if(ps2x.ButtonPressed(PSB_CROSS)) {
-       
+    if(ps2x.ButtonPressed(PSB_L2)) {      
+      pwm.setPWM(PWM_CHANNEL5,0,4095);
+      pwm.setPWM(PWM_CHANNEL6,0,4095);
     }
     if(ps2x.ButtonPressed(PSB_SQUARE)) {
+      pwm.setPWM(Servo_1,0,225);
     }
-    
+    Serial.println(pwm.getPWM(PWM_CHANNEL5));
+    Serial.println(pwm.getPWM(PWM_CHANNEL6));
 }
 void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
-  //if(ps2x.Button(PSB_START)) {autoMode();}
+  if(ps2x.Button(PSB_START)) {autoMode();}
   pushEngine();
 }

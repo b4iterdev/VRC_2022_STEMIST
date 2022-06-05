@@ -7,8 +7,7 @@
 #define s3 2
 #define s4 32
 #define s5 25
-#define IRSwitch 7
-#define IR 8
+#define IR 0
 
 void autoMode(void) {
   bool boolsensor1;
