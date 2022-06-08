@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <motors.h>
-#include <autonomous.h>
-#include <ESP32Servo.h>
+#include <autonomous-black.h>
 #include <PS2_controller.h>
 
 #define PWM_CHANNEL5 12
@@ -14,13 +13,11 @@
 #define Servo_5 3
 #define Servo_6 2
 
-bool controlMode = true;
 void setup()
 {
   Serial.begin(115200);
   pinMode(s1, INPUT); 
   pinMode(s2, INPUT);
-  pinMode(s3, INPUT);
   pinMode(s4, INPUT);
   pinMode(s5, INPUT);
   pinMode(IR,INPUT);
@@ -28,7 +25,6 @@ void setup()
   setupPS2controller();
   Serial.println("Done setup!");
 }
-
 
 void pushEngine(void) {
     if(ps2x.ButtonPressed(PSB_TRIANGLE)) {
@@ -55,6 +51,6 @@ void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
-  if(ps2x.Button(PSB_START)) {autoMode();}
+  if(ps2x.ButtonPressed(PSB_START)) {autoMode();}
   pushEngine();
 }
