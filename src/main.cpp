@@ -14,6 +14,7 @@
 #define Servo_5 3
 #define Servo_6 2
 
+bool controlMode = true;
 void setup()
 {
   Serial.begin(115200);
@@ -22,11 +23,9 @@ void setup()
   pinMode(s3, INPUT);
   pinMode(s4, INPUT);
   pinMode(s5, INPUT);
-  pinMode(IRSwitch, INPUT);
   pinMode(IR,INPUT);
   initMotors();
   setupPS2controller();
-
   Serial.println("Done setup!");
 }
 
@@ -45,10 +44,12 @@ void pushEngine(void) {
       pwm.setPWM(PWM_CHANNEL6,0,4095);
     }
     if(ps2x.ButtonPressed(PSB_SQUARE)) {
-      pwm.setPWM(Servo_1,0,225);
+      pwm.setPWMFreq(50);
+      pwm.setPWM(Servo_1,0,110);
+      delay(200);
+      pwm.setPWM(Servo_1,0,0);
+      pwm.setPWMFreq(1600);
     }
-    Serial.println(pwm.getPWM(PWM_CHANNEL5));
-    Serial.println(pwm.getPWM(PWM_CHANNEL6));
 }
 void loop()
 {

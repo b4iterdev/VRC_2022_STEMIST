@@ -10,44 +10,39 @@
 #define IR 0
 
 void autoMode(void) {
-  bool boolsensor1;
-  bool boolsensor2;
-  bool boolsensor3;
-  bool boolsensor4;
-  bool boolsensor5;
-  bool boollineSwitch;
-  bool boolIRSwitchval;
-  if (digitalRead(s1) == 0) {boolsensor1=0;}
-  else if (digitalRead(s1) == 1) {boolsensor1 = 1;}
-  else if (digitalRead(s2) == 0) {boolsensor2 = 0;}
-  else if (digitalRead(s2) == 1) {boolsensor2 = 1;}
-  else if (digitalRead(s2) == 1) {boolsensor2 = 1;}
-  else if (digitalRead(s3) == 0) {boolsensor3 = 0;}
-  else if (digitalRead(s3) == 1) {boolsensor3 = 1;}
-  else if (digitalRead(s4) == 0) {boolsensor4 = 0;}
-  else if (digitalRead(s4) == 1) {boolsensor4 = 1;}
-  else if (digitalRead(s5) == 0) {boolsensor5 = 0;}
-  else if (digitalRead(s5) == 1) {boolsensor3 = 1;}
-  
-  Serial.print("S1: ");
-  Serial.print(boolsensor1);Serial.print("   ");
-  Serial.print("S2: ");
-  Serial.print(boolsensor2);Serial.print("   ");
-  Serial.print("S3: ");
-  Serial.print(boolsensor3);Serial.print("   ");
-  Serial.print("S4: ");
-  Serial.print(boolsensor4);Serial.print("   ");
-  Serial.print("Công tắc: ");
-  Serial.print(boollineSwitch);Serial.print("   ");
-  Serial.print("Hồng ngoại: ");
-  Serial.println(boolIRSwitchval);  
+  int sen1 = digitalRead(s1);
+  int sen2 = digitalRead(s2);
+  int sen3 = digitalRead(s3);
+  int sen4 = digitalRead(s4);
+  int sen5 = digitalRead(s5);
+  int irval = digitalRead(IR);
 
-  bool cStatus[5] = {boolsensor1,boolsensor2,boolsensor3,boolsensor4,boolsensor5};
-  if (cStatus[3] && cStatus[2] && cStatus[4] == 0) {
-    //forward
-  } else if (cStatus[3] && cStatus[2] && !cStatus[4] == 0) {
+  Serial.print("S1: ");
+  Serial.print(sen1);Serial.print("   ");
+  Serial.print("S2: ");
+  Serial.print(sen2);Serial.print("   ");
+  Serial.print("S3: ");
+  Serial.print(sen3);Serial.print("   ");
+  Serial.print("S4: ");
+  Serial.print(sen4);Serial.print("   ");
+  Serial.print("Công tắc: ");
+  Serial.print(sen5);Serial.print("   ");
+  Serial.print("Hồng ngoại: ");
+  Serial.println(irval);  
+
+  int cStatus[5] = {sen1,sen2,sen3,sen4,sen5};
+  if (cStatus[3] == 0 && cStatus[1] == 0 && cStatus[2] == 0 && cStatus[0] == 0 && cStatus[4] == 1) {
     //turn left
-  } else if (cStatus[3] && !cStatus[2] && cStatus[4] == 0) {
-    //turn right
+    Serial.println("left");
+  } else if (cStatus[3] == 0 && cStatus[1] == 0 && cStatus[2] == 0 && cStatus[0] == 1 && cStatus[4] == 1) {
+    //forward
+    Serial.println("forward");
+
+  } else if (cStatus[3] == 0 && cStatus[1] == 0 && cStatus[2] == 0 && cStatus[0] == 1 && cStatus[4] == 0) {
+   //turn right
+    Serial.println("right");
+  } else if(irval == 0) {
+    //stop and push.
+    Serial.println("right");
   }
 }
