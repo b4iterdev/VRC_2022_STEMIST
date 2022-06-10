@@ -13,6 +13,8 @@
 #define Servo_5 3
 #define Servo_6 2
 
+int servoEnd = 0;
+
 void setup()
 {
   Serial.begin(115200);
@@ -42,10 +44,31 @@ void pushEngine(void) {
     if(ps2x.ButtonPressed(PSB_SQUARE)) {
       pwm.setPWMFreq(50);
       pwm.setPWM(Servo_1,0,110);
+      pwm.setPWM(Servo_2,0,110);
+      pwm.setPWM(Servo_3,0,110);
       delay(200);
       pwm.setPWM(Servo_1,0,0);
-      pwm.setPWMFreq(1600);
+      pwm.setPWM(Servo_2,0,0);
     }
+    if(ps2x.ButtonPressed(PSB_CROSS)) {
+      pwm.setPWMFreq(50);
+      pwm.setPWM(Servo_1,0,110);
+      pwm.setPWM(Servo_2,0,110);
+      pwm.setPWM(Servo_3,110,0);
+      delay(200);
+      pwm.setPWM(Servo_1,0,0);
+      pwm.setPWM(Servo_2,0,0);
+    }
+    if(ps2x.ButtonPressed(PSB_L1)) {
+      pwm.setPWMFreq(50);
+      pwm.setPWM(Servo_1,0,224);
+      pwm.setPWM(Servo_2,0,224);
+      delay(200);
+      pwm.setPWM(Servo_1,0,0);
+      pwm.setPWM(Servo_2,0,0);
+      pwm.setPWM(Servo_3,0,0);
+      pwm.setPWMFreq(1600);
+     }
 }
 void loop()
 {
