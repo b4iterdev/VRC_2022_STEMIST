@@ -39,21 +39,28 @@ void autoMode(void) {
   if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 0 && cStatus[3] == 1) {
     //turn left (hard)
     Serial.println("left");
+    setPWMMotors(512,0,615,0);
   } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 1) {
     //forward
     Serial.println("forward");
+    setPWMMotors(512, 0, 512, 0);
   } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 0) {
    //turn right (hard)
     Serial.println("right");
+    setPWMMotors(615,0,512,0);
   } else if (cStatus[0] == 1 && cStatus [1] == 1 && cStatus[2] == 0 && cStatus [3] == 1) {
     //turn left light
     Serial.println("left light");
+    setPWMMotors(512,0,590,0);
   } else if (cStatus[0] == 1 && cStatus [1] == 0 && cStatus[2] == 1 && cStatus [3] == 1) {
     //turn right light
     Serial.println("right light");
+    setPWMMotors(590,0,512,0);
   } else if(irval == 1) {
     //stop and push.
     Serial.println("stop");
+    setPWMMotors(0, 0, 0, 0);
+    break;
   }
   }
 }
