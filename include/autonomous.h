@@ -9,12 +9,13 @@
 #define s5 25
 #define IR 0
 
+bool start = true;
 int check = 0;
 int right;
 int startOnBot;
 
 void autoMode(void) {
-  for(int i = 0; i >= 0; i++) {
+  while(start == true) {
   int sen1 = digitalRead(s1);
   int sen2 = digitalRead(s2);
   int sen3 = digitalRead(s3);
@@ -35,6 +36,10 @@ void autoMode(void) {
   Serial.print("Hồng ngoại: ");
   Serial.println(irval);  
 
+  if (ps2x.ButtonPressed(PSAB_PAD_UP)) {startOnBot = 0;}
+  else if (ps2x.ButtonPressed(PSAB_PAD_DOWN)) {startOnBot = 1;}
+  else if (ps2x.ButtonPressed(PSAB_PAD_LEFT)) {right = 0;}
+  else if (ps2x.ButtonPressed(PSAB_PAD_RIGHT)) {right = 1;}
   int cStatus[4] = {sen1,sen2,sen4,sen5};
   if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 0 && cStatus[3] == 1) {
     //turn left (hard)

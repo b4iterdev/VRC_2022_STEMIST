@@ -37,6 +37,14 @@ void pushEngine(void) {
       pwm.setPWM(PWM_CHANNEL5,0,4095);
       pwm.setPWM(PWM_CHANNEL6,4095,0);    
     }
+    if(ps2x.ButtonPressed(PSB_R1)) {
+      pwm.setPWM(PWM_CHANNEL7,4095,0);
+      pwm.setPWM(PWM_CHANNEL8,0,4095);
+    }
+    if(ps2x.ButtonPressed(PSB_R2)) {
+      pwm.setPWM(PWM_CHANNEL7,0,4095);
+      pwm.setPWM(PWM_CHANNEL8,4095,0); 
+    }
     if(ps2x.ButtonPressed(PSB_L2)) {      
       pwm.setPWM(PWM_CHANNEL5,0,4095);
       pwm.setPWM(PWM_CHANNEL6,0,4095);

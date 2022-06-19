@@ -25,8 +25,8 @@ bool PS2control()
   int nJoyX = ps2x.Analog(PSS_LX); // read x-joystick
   int nJoyY = ps2x.Analog(PSS_LY); // read y-joystick
 
-  nJoyX = map(nJoyX, 0, 255, -1023, 1023);
-  nJoyY = map(nJoyY, 0, 255, 1023, -1023);
+  nJoyX = map(nJoyX, 0, 255, -4095, 4095);
+  nJoyY = map(nJoyY, 0, 255, 4095, -4095);
 
   // OUTPUTS
   int nMotMixL; // Motor (left) mixed output
