@@ -15,6 +15,19 @@
 #define Servo_5 3
 #define Servo_6 2
 
+//Đặt chân cảm biến dò đường
+#define s1 39
+#define s2 36
+#define s4 32
+#define s5 25
+#define IR 2
+
+int check = 0;
+int right;
+int startOnBot;
+int stop = 0;
+bool start = true;
+
 void setup()
 {
   Serial.begin(115200);
@@ -80,10 +93,74 @@ void pushEngine(void) {
       pwm.setPWMFreq(1600);
      }
 }
+void autoMode(void) {
+  unsigned long startTimer = millis();
+  while(start == true) {
+  int sen1 = digitalRead(s1);
+  int sen2 = digitalRead(s2);
+  int sen4 = digitalRead(s4);
+  int sen5 = digitalRead(s5);
+  int irval = digitalRead(IR);
+
+  Serial.print("S1: ");
+  Serial.print(sen1);Serial.print("   ");
+  Serial.print("S2: ");
+  Serial.print(sen2);Serial.print("   ");
+  Serial.print("S4: ");
+  Serial.print(sen4);Serial.print("   ");
+  Serial.print("Công tắc: ");
+  Serial.print(sen5);Serial.print("   ");
+  Serial.print("Hồng ngoại: ");
+  Serial.println(irval);  
+
+  if(millis() - startTimer >= 20000) {
+    break;
+  }
+  if(ps2x.ButtonPressed(PSB_SELECT)) {stop = 1;}
+  int cStatus[4] = {sen1,sen2,sen4,sen5}; 
+  if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 0 && cStatus[3] == 1) {
+    //turn left (hard)
+    Serial.println("left");
+    setPWMMotors(512,0,615,0);
+  } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 1) {
+    //forward
+    Serial.println("forward");
+    setPWMMotors(512, 0, 512, 0);
+  } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 0) {
+   //turn right (hard)
+    Serial.println("right");
+    setPWMMotors(615,0,512,0);
+  } else if (cStatus[0] == 1 && cStatus [1] == 1 && cStatus[2] == 0 && cStatus [3] == 1) {
+    //turn left light
+    Serial.println("left light");
+    setPWMMotors(512,0,590,0);
+  } else if (cStatus[0] == 1 && cStatus [1] == 0 && cStatus[2] == 1 && cStatus [3] == 1) {
+    //turn right light
+    Serial.println("right light");
+    setPWMMotors(590,0,512,0);
+  } else if(irval == 1) {
+    //stop and push.
+    Serial.println("stop");
+    setPWMMotors(0, 0, 0, 0);
+    break;
+  } else if(stop == 1) {break;}
+  while(startOnBot == 1) {Serial.println("The device is set to start from the bottom line.");}
+  while(right == 1) {Serial.println("The device is set to start from right");}
+  }
+}
+void getInfo() {
+  if(ps2x.ButtonPressed(PSB_PAD_DOWN)) {startOnBot = 1;}
+  if(ps2x.ButtonPressed(PSB_PAD_UP)) {startOnBot = 0;}
+  if(ps2x.ButtonPressed(PSB_PAD_LEFT)) {right = 0;}
+  if(ps2x.ButtonPressed(PSB_PAD_RIGHT)) {right = 1;}
+  if(ps2x.ButtonPressed(PSB_START)) {autoMode();}
+}
 void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
-  if(ps2x.ButtonPressed(PSB_START)) {autoMode();}
+  getInfo();
+  Serial.print(startOnBot);
+  Serial.println(right);
   pushEngine();
 }
