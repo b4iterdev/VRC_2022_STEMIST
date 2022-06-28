@@ -22,11 +22,11 @@ bool PS2control()
 {
   // Based on IgorF2's Arduino Bot:https://www.instructables.com/Arduino-Robot-With-PS2-Controller-PlayStation-2-Jo/
 
-  int nJoyX = ps2x.Analog(PSS_LX); // read x-joystick
+  int nJoyX = ps2x.Analog(PSS_RX); // read x-joystick
   int nJoyY = ps2x.Analog(PSS_LY); // read y-joystick
 
-  nJoyX = map(nJoyX, 0, 255, -4095, 4095);
-  nJoyY = map(nJoyY, 0, 255, 4095, -4095);
+  nJoyX = map(nJoyX, 0, 255, -3276, 3276);
+  nJoyY = map(nJoyY, 0, 255, 3276, -3276);
 
   // OUTPUTS
   int nMotMixL; // Motor (left) mixed output

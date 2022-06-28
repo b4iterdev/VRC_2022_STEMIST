@@ -22,10 +22,6 @@
 #define s5 25
 #define IR 2
 
-int check = 0;
-int right;
-int startOnBot;
-int stop = 0;
 bool start = true;
 
 void setup()
@@ -40,13 +36,12 @@ void setup()
   setupPS2controller();
   Serial.println("Done setup!");
 }
-
 void pushEngine(void) {
     if(ps2x.ButtonPressed(PSB_TRIANGLE)) {
       pwm.setPWM(PWM_CHANNEL5,4095,0);
       pwm.setPWM(PWM_CHANNEL6,0,4095);
     }
-    if(ps2x.ButtonPressed(PSB_CIRCLE)) {
+    if(ps2x.ButtonReleased(PSB_TRIANGLE)) {
       pwm.setPWM(PWM_CHANNEL5,0,4095);
       pwm.setPWM(PWM_CHANNEL6,4095,0);    
     }
@@ -66,32 +61,38 @@ void pushEngine(void) {
     }
     if(ps2x.ButtonPressed(PSB_SQUARE)) {
       pwm.setPWMFreq(50);
-      pwm.setPWM(Servo_1,0,110);
-      pwm.setPWM(Servo_2,0,110);
-      pwm.setPWM(Servo_3,0,110);
-      pwm.setPWM(Servo_4,0,110);
-      delay(200);
-      pwm.setPWM(Servo_1,0,0);
-      pwm.setPWM(Servo_2,0,0);
+      pwm.setPWM(Servo_1,0,80);
+      pwm.setPWM(Servo_2,0,440);
+      pwm.setPWM(Servo_3,0,80);
+      pwm.setPWM(Servo_4,0,440);
     }
     if(ps2x.ButtonPressed(PSB_CROSS)) {
-      pwm.setPWMFreq(50);
-      pwm.setPWM(Servo_1,0,224);
-      pwm.setPWM(Servo_2,0,224);
-      pwm.setPWM(Servo_3,0,110);
-      pwm.setPWM(Servo_4,0,110);
-      delay(200);
-      pwm.setPWM(Servo_1,0,0);
-      pwm.setPWM(Servo_2,0,0);
+      pwm.setPWM(Servo_1,0,440);
+      pwm.setPWM(Servo_2,0,80);
+      pwm.setPWM(Servo_3,0,80);
+      pwm.setPWM(Servo_4,0,440);
     }
-    if(ps2x.ButtonPressed(PSB_L1)) {      
-      pwm.setPWM(Servo_1,0,0);
-      pwm.setPWM(Servo_2,0,0);
+    if(ps2x.ButtonPressed(PSB_L1)) { 
       pwm.setPWM(Servo_3,0,0);
       pwm.setPWM(Servo_4,0,0);
       delay(200);
       pwm.setPWMFreq(1600);
      }
+}
+void autoModePush() {
+    long long startTimer = millis();
+    setPWMMotors(0, 0, 0, 0);
+    pwm.setPWM(PWM_CHANNEL7,4095,0);
+    pwm.setPWM(PWM_CHANNEL8,0,4095);
+    if(millis() - startTimer >= 200) {
+      pwm.writeMicroseconds(Servo_1,1);
+      pwm.writeMicroseconds(Servo_2,1);
+      pwm.writeMicroseconds(Servo_3,1);
+      pwm.writeMicroseconds(Servo_4,1.5);
+    } else if(millis() - startTimer >= 3000) {
+      pwm.setPWM(PWM_CHANNEL7,0,4095);
+      pwm.setPWM(PWM_CHANNEL8,0,4095);
+    }
 }
 void autoMode(void) {
   unsigned long startTimer = millis();
@@ -116,51 +117,74 @@ void autoMode(void) {
   if(millis() - startTimer >= 20000) {
     break;
   }
-  if(ps2x.ButtonPressed(PSB_SELECT)) {stop = 1;}
+  if(ps2x.ButtonPressed(PSB_SELECT)) {start = false;}
+
   int cStatus[4] = {sen1,sen2,sen4,sen5}; 
-  if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 0 && cStatus[3] == 1) {
+  if (cStatus[2] == 1 && cStatus[1] == 1 && cStatus[0] == 1 && cStatus[3] == 0) {
     //turn left (hard)
+    long long turnTimer = millis();
+    if (millis() - turnTimer <= 1000)
+    {
+      Serial.print("backwarding");
+      setPWMMotors(0,200,0,200);
+      break;
+    }
     Serial.println("left");
     setPWMMotors(512,0,615,0);
-  } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 1) {
+  
+  } else if (cStatus[2] == 1 && cStatus[1] == 1 && cStatus[0] == 0 && cStatus[3] == 0) {
     //forward
     Serial.println("forward");
     setPWMMotors(512, 0, 512, 0);
-  } else if (cStatus[2] == 0 && cStatus[1] == 0 && cStatus[0] == 1 && cStatus[3] == 0) {
+  } else if (cStatus[2] == 1 && cStatus[1] == 1 && cStatus[0] == 0 && cStatus[3] == 1) {
    //turn right (hard)
+   long long turnTimer = millis();
+    if (millis() - turnTimer <= 1000)
+    {
+      Serial.print("backwarding");
+      setPWMMotors(0,200,0,200);
+      break;
+    }
     Serial.println("right");
     setPWMMotors(615,0,512,0);
-  } else if (cStatus[0] == 1 && cStatus [1] == 1 && cStatus[2] == 0 && cStatus [3] == 1) {
+  } else if (cStatus[0] == 0 && cStatus [1] == 0 && cStatus[2] == 1 && cStatus [3] == 0) {
     //turn left light
+    long long turnTimer = millis();
+    if (millis() - turnTimer <= 1000) {
+      Serial.print("backwarding");
+      setPWMMotors(0,200,0,200);
+      break;
+    }
     Serial.println("left light");
     setPWMMotors(512,0,590,0);
-  } else if (cStatus[0] == 1 && cStatus [1] == 0 && cStatus[2] == 1 && cStatus [3] == 1) {
+  } else if (cStatus[0] == 0 && cStatus [1] == 1 && cStatus[2] == 0 && cStatus [3] == 0) {
     //turn right light
     Serial.println("right light");
     setPWMMotors(590,0,512,0);
-  } else if(irval == 1) {
+  } else if(cStatus[0] == 1 && cStatus[1] == 1 && cStatus[2] == 1 && cStatus[3] == 1) {
     //stop and push.
     Serial.println("stop");
-    setPWMMotors(0, 0, 0, 0);
+    autoModePush();
     break;
-  } else if(stop == 1) {break;}
-  while(startOnBot == 1) {Serial.println("The device is set to start from the bottom line.");}
-  while(right == 1) {Serial.println("The device is set to start from right");}
+  } else if(start = false) {break;}
   }
 }
-void getInfo() {
-  if(ps2x.ButtonPressed(PSB_PAD_DOWN)) {startOnBot = 1;}
-  if(ps2x.ButtonPressed(PSB_PAD_UP)) {startOnBot = 0;}
-  if(ps2x.ButtonPressed(PSB_PAD_LEFT)) {right = 0;}
-  if(ps2x.ButtonPressed(PSB_PAD_RIGHT)) {right = 1;}
-  if(ps2x.ButtonPressed(PSB_START)) {autoMode();}
+void spoolauto() {
+  long long startTimer = millis();
+  if (millis() - startTimer <= 2000) {
+  setPWMMotors(4096,0,4096,0);
+  } else {setPWMMotors(0,4096,0,4096);
+  delay(2000);
+  }
 }
 void loop()
 {
   ps2x.read_gamepad(false, 0);
   PS2control();
-  getInfo();
-  Serial.print(startOnBot);
-  Serial.println(right);
+  if (ps2x.ButtonPressed(PSB_SELECT)) {
+    //changeSpeed();
+  } else if(ps2x.ButtonReleased(PSB_SELECT)) {
+    spoolauto();
+  }
   pushEngine();
 }
